@@ -1,3 +1,4 @@
+from __future__ import annotations
 import sys
 import os
 import shlex
@@ -7,14 +8,16 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 import src
 
+db = src.db.DefaultDB()
+
 PROMPT = "HMP> "
 COMMANDS = ["EXIT", "INSERT"]
 
-def inform(s:str) -> None:
-    print(f"{PROMPT}{s}")
+def inform(s:str, file=None) -> None:
+    print(f"{PROMPT}{s}",file=file)
 
 def inform_error(s):
-    inform(f"ERROR: {s}")
+    inform(f"ERROR: {s}", sys.stderr)
 
 def get_input() -> str:
     cmd = input(PROMPT)
@@ -24,7 +27,7 @@ def setup():
     inform("Setting up cli...")
     os.makedirs(src.DATA_PATH, exist_ok=True)
     inform("Initializing database...")
-    src.db.initialize()
+    db.initialize()
 
 def handle_insert(cmds:list[str]):
     t = ""
@@ -51,7 +54,7 @@ def handle_insert(cmds:list[str]):
     if has_error:
         return
 
-    result = src.db.insert(t, v)
+    result = db.insert_one(t, v)
     return result
 
 
