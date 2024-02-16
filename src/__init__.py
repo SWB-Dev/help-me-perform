@@ -5,7 +5,10 @@ SRC_PATH  = os.path.join("src")
 SQL_PATH = os.path.join(SRC_PATH, "sql")
 SQL_FILES = {
     "BUILD": os.path.join(SQL_PATH, "build.sql"),
-    "INSERT-GROUP": os.path.join(SQL_PATH, "inserts", "insert_group.sql")
+    "INSERT": {
+        "GROUP": os.path.join(SQL_PATH, "inserts", "insert_group.sql"),
+        "STAKEHOLDER": os.path.join(SQL_PATH, "inserts", "insert_stakeholder.sql")
+    }
 }
 
 
