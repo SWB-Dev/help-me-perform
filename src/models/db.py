@@ -19,11 +19,14 @@ def initialize():
     cur.close()
 
 def insert(t:str, values:tuple) -> tuple:
-    with get_db() as db:
-        cur = db.cursor()
-        with open(SQL_FILES[f"INSERT-{t}"], "r") as f:
-            sql = f.read()
-            cur.execute(sql, values)
-        result = cur.fetchone()
-        cur.close()
-        return result
+    try:
+        with get_db() as db:
+            cur = db.cursor()
+            with open(SQL_FILES["INSERT"][t], "r") as f:
+                sql = f.read()
+                cur.execute(sql, values)
+            result = cur.fetchone()
+            cur.close()
+            return result
+    except sqlite3.IntegrityError as i_ex:
+        return ("ERROR", i_ex)

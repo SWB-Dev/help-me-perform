@@ -1,5 +1,6 @@
 import sys
 import os
+import shlex
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
@@ -25,7 +26,7 @@ def setup():
     inform("Initializing database...")
     src.db.initialize()
 
-def handle_insert(cmds):
+def handle_insert(cmds:list[str]):
     t = ""
     v = ()
     options = ["-t", "-d"]
@@ -58,7 +59,7 @@ def main():
     """"""
     setup()
     while True:
-        raw = get_input().split(" ")
+        raw = shlex.split(get_input())
         cmd, params = raw[0], raw[1:]
         ucmd = cmd.upper()
 
@@ -71,7 +72,9 @@ def main():
                     inform_error(f"Too few parameters for command \"{cmd}\"")
                 else:
                     retval = handle_insert(params)
-                    if retval:
+                    if retval and retval[0] == "ERROR":
+                        inform_error(retval[1])
+                    elif retval:
                         inform(retval)
         else:
             inform_error(f"Invalid command \"{cmd}\"")
