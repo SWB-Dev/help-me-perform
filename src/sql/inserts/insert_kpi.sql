@@ -1,0 +1,1 @@
+INSERT INTO KPI VALUES (?, ?, ?);
