@@ -8,7 +8,7 @@ class IDatabase(Protocol):
     def get_db(self):
         ...
 
-    def initalize_db(self) -> None:
+    def initialize_db(self) -> None:
         ...
     
     def insert_one(self, tname:str, values:tuple):
