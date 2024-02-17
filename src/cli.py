@@ -12,7 +12,7 @@ import src
 db = src.db.TestDB()
 
 PROMPT = "HMP> "
-COMMANDS = ["EXIT", "INSERT", "SELECT"]
+COMMANDS = ["EXIT", "INSERT", "SELECT", "CACHE"]
 CACHE = {}
 
 def inform(s:str, file=None) -> None:
@@ -102,6 +102,29 @@ def handle_select(cmds:list[str]):
 
     return result
 
+def handle_cache(cmds:list[str]):
+    _cmd_name = "cache"
+    k = ""
+    options = ["-k"]
+    seeking = ""
+    has_error = False
+
+    for cmd in cmds:
+        if cmd.lower() in options:
+            seeking = cmd.lower()
+        elif seeking == "-k":
+            k = cmd
+    
+    if k == "":
+        inform_error(f"Command \"{_cmd_name}\" is missing option \"-k\"")
+        has_error = True
+
+    if has_error:
+        return
+    result = CACHE[k]
+
+    return result
+
 def main():
     """"""
     setup()
@@ -130,6 +153,15 @@ def main():
                     inform_error(f"Too few parameters for command \"{cmd}\"")
                 else:
                     retval = handle_select(params)
+                    if retval and retval[0] == "ERROR":
+                        inform_error(retval[1])
+                    elif retval:
+                        inform(retval)
+            elif ucmd == "CACHE":
+                if param_cnt < 1:
+                    inform_error(f"Too few parameters for command \"{cmd}\"")
+                else:
+                    retval = handle_cache(params)
                     if retval and retval[0] == "ERROR":
                         inform_error(retval[1])
                     elif retval:
