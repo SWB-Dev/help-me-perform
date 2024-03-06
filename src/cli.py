@@ -12,8 +12,24 @@ import src
 db = src.db.TestDB()
 
 PROMPT = "HMP> "
-COMMANDS = ["EXIT", "INSERT", "SELECT", "CACHE"]
+COMMANDS = ["EXIT", "INSERT", "SELECT", "CACHE", "HELP"]
 CACHE = {}
+
+class HMP_CLI:
+    PROMPT = "HMP> "
+    COMMANDS = ["EXIT", "INSERT", "SELECT", "CACHE", "HELP"]
+    CACHE = {}
+
+    def __init__(self):
+        """"""
+        self.cur_cmd_raw:str = None
+
+    def get_command(self):
+        self.cur_cmd_raw = self._get_input()
+
+    def _get_input() -> str:
+        cmd = input(PROMPT)
+        return cmd
 
 def inform(s:str, file=None) -> None:
     print(f"{PROMPT}{s}",file=file)
@@ -125,6 +141,15 @@ def handle_cache(cmds:list[str]):
 
     return result
 
+def help_text():
+    inform("Thank you for using Help-Me-Perform.\n\tCreated by Steven Barnes.")
+    # inform("\n\tThis app was a response to a bad year end review.")
+    inform("Avaiable Commands:")
+    inform("\"help\"\tThis dialogue.")
+    inform("\"select\"\tSelect or find a record from a given table which meets")
+    inform("\tthe given column and value.")
+    inform("\teg. select -t stakeholder -f id -v 1")
+
 def main():
     """"""
     setup()
@@ -139,7 +164,9 @@ def main():
             if ucmd == "EXIT":
                 break
 
-            if ucmd == "INSERT":
+            if ucmd == "HELP":
+                help_text()
+            elif ucmd == "INSERT":
                 if param_cnt < 2:
                     inform_error(f"Too few parameters for command \"{cmd}\"")
                 else:
